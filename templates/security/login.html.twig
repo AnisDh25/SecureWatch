@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SecureWatch - Login{% endblock %}
+
+{% block stylesheets %}
+<style>
+    input::placeholder {
+        color: #374151 !important;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-blue-600 p-4">
+    <div class="w-full max-w-md">
+        <!-- Logo and Branding -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur rounded-xl mb-4">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2">SecureWatch</h1>
+            <p class="text-slate-300">Secure Access Portal</p>
+        </div>
+
+        <!-- Login Form -->
+        <div class="bg-white/95 backdrop-blur border border-white/20 rounded-xl shadow-2xl">
+            <div class="p-8">
+                <div class="text-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Sign In</h2>
+                    <p class="text-sm text-gray-600">
+                        Access your security dashboard
+                    </p>
+                </div>
+
+                {% if error %}
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </div>
+                {% endif %}
+
+                <form action="{{ path('app_login') }}" method="post" class="space-y-4">
+                    <div class="space-y-2">
+                        <label for="username" class="block text-sm font-medium text-gray-700">Email Address</label>
+                        <input
+                            type="email"
+                            id="username"
+                            name="_username"
+                            value="{{ last_username }}"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                            placeholder="admin@securewatch.com"
+                            required
+                            autocomplete="email"
+                            autofocus
+                        />
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="_password"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                            placeholder="••••••••"
+                            required
+                            autocomplete="current-password"
+                        />
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="twofa" class="block text-sm font-medium text-gray-700">Two-Factor Authentication (Optional)</label>
+                        <input
+                            type="text"
+                            id="twofa"
+                            name="_twofa"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                            placeholder="000000"
+                            maxlength="6"
+                            pattern="[0-9]{6}"
+                        />
+                    </div>
+
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-200 flex items-center justify-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                        Secure Login
+                    </button>
+                </form>
+                
+                <div class="mt-4 text-center">
+                    <a href="#" class="text-sm text-blue-600 hover:underline">
+                        Forgot your password?
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Security Notice -->
+        <div class="mt-6 text-center text-sm text-slate-400">
+            <p>Protected by enterprise-grade security</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

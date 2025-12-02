@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}SecureWatch - Security Monitoring{% endblock %}</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🛡️</text></svg>">
+        <meta name="csrf-token" content="{{ csrf_token('authenticate') }}">
+        {% block stylesheets %}
+        <style>
+            /* Light Mode Styles */
+            .light-mode {
+                background-color: #ffffff !important;
+                color: #1f2937 !important;
+            }
+            
+            .light-mode body {
+                background-color: #ffffff !important;
+                color: #1f2937 !important;
+            }
+            
+            .light-mode .bg-slate-900 {
+                background-color: #f8fafc !important;
+            }
+            
+            .light-mode .bg-slate-800 {
+                background-color: #ffffff !important;
+            }
+            
+            .light-mode .bg-slate-700 {
+                background-color: #f1f5f9 !important;
+            }
+            
+            .light-mode .bg-slate-600 {
+                background-color: #e2e8f0 !important;
+            }
+            
+            .light-mode .bg-slate-900\/50 {
+                background-color: rgba(248, 250, 252, 0.5) !important;
+            }
+            
+            .light-mode .bg-slate-700\/50 {
+                background-color: rgba(241, 245, 249, 0.5) !important;
+            }
+            
+            .light-mode .bg-blue-600 {
+                background-color: #2563eb !important;
+            }
+            
+            .light-mode .bg-blue-600\/20 {
+                background-color: rgba(37, 99, 235, 0.1) !important;
+            }
+            
+            .light-mode .bg-green-600\/20 {
+                background-color: rgba(34, 197, 94, 0.1) !important;
+            }
+            
+            .light-mode .bg-red-600\/20 {
+                background-color: rgba(239, 68, 68, 0.1) !important;
+            }
+            
+            .light-mode .bg-yellow-600\/20 {
+                background-color: rgba(245, 158, 11, 0.1) !important;
+            }
+            
+            .light-mode .bg-orange-600\/20 {
+                background-color: rgba(251, 146, 60, 0.1) !important;
+            }
+            
+            .light-mode .text-white {
+                color: #1f2937 !important;
+            }
+            
+            .light-mode .text-slate-300 {
+                color: #64748b !important;
+            }
+            
+            .light-mode .text-slate-400 {
+                color: #475569 !important;
+            }
+            
+            .light-mode .text-slate-600 {
+                color: #475569 !important;
+            }
+            
+            .light-mode .text-slate-700 {
+                color: #334155 !important;
+            }
+            
+            .light-mode .text-slate-900 {
+                color: #1f2937 !important;
+            }
+            
+            .light-mode .text-blue-400 {
+                color: #2563eb !important;
+            }
+            
+            .light-mode .text-blue-600 {
+                color: #2563eb !important;
+            }
+            
+            .light-mode .text-green-400 {
+                color: #16a34a !important;
+            }
+            
+            .light-mode .text-red-400 {
+                color: #dc2626 !important;
+            }
+            
+            .light-mode .text-yellow-400 {
+                color: #ca8a04 !important;
+            }
+            
+            .light-mode .text-orange-400 {
+                color: #ea580c !important;
+            }
+            
+            .light-mode .border-slate-700 {
+                border-color: #e2e8f0 !important;
+            }
+            
+            .light-mode .border-slate-600 {
+                border-color: #cbd5e1 !important;
+            }
+            
+            .light-mode .border-t-slate-700 {
+                border-top-color: #e2e8f0 !important;
+            }
+            
+            .light-mode .border-l-4 {
+                border-left-width: 4px !important;
+            }
+            
+            .light-mode .border-red-500 {
+                border-color: #ef4444 !important;
+            }
+            
+            .light-mode .border-yellow-500 {
+                border-color: #eab308 !important;
+            }
+            
+            .light-mode .border-blue-500 {
+                border-color: #3b82f6 !important;
+            }
+            
+            .light-mode .divide-slate-700 > * + * {
+                border-color: #e2e8f0 !important;
+            }
+            
+            .light-mode .hover\:bg-slate-700:hover {
+                background-color: #f1f5f9 !important;
+            }
+            
+            .light-mode .hover\:bg-slate-600:hover {
+                background-color: #e2e8f0 !important;
+            }
+            
+            .light-mode .hover\:bg-blue-700:hover {
+                background-color: #1d4ed8 !important;
+            }
+            
+            .light-mode .hover\:text-blue-300:hover {
+                color: #1d4ed8 !important;
+            }
+            
+            .light-mode .hover\:text-white:hover {
+                color: #1f2937 !important;
+            }
+            
+            .light-mode .focus\:ring-blue-500:focus {
+                --tw-ring-color: #3b82f6 !important;
+            }
+            
+            .light-mode .focus\:border-transparent:focus {
+                border-color: transparent !important;
+            }
+            
+            .light-mode .placeholder-slate-400::placeholder {
+                color: #94a3b8 !important;
+            }
+            
+            /* Light mode for specific elements */
+            .light-mode .bg-gradient-to-br {
+                background: linear-gradient(to bottom right, #3b82f6, #8b5cf6, #3b82f6) !important;
+            }
+            
+            .light-mode .bg-white\/95 {
+                background-color: rgba(255, 255, 255, 0.95) !important;
+            }
+            
+            .light-mode .bg-white\/20 {
+                background-color: rgba(255, 255, 255, 0.2) !important;
+            }
+            
+            /* Adjust text colors for readability in light mode */
+            .light-mode .text-gray-800 {
+                color: #1f2937 !important;
+            }
+            
+            .light-mode .text-gray-600 {
+                color: #4b5563 !important;
+            }
+            
+            .light-mode .text-gray-700 {
+                color: #374151 !important;
+            }
+            
+            .light-mode .text-gray-900 {
+                color: #111827 !important;
+            }
+            
+            /* Form elements in light mode */
+            .light-mode input[type="text"],
+            .light-mode input[type="email"],
+            .light-mode input[type="password"],
+            .light-mode input[type="number"],
+            .light-mode select,
+            .light-mode textarea {
+                background-color: #f8fafc !important;
+                color: #1f2937 !important;
+                border-color: #e2e8f0 !important;
+            }
+            
+            .light-mode input[type="text"]::placeholder,
+            .light-mode input[type="email"]::placeholder,
+            .light-mode input[type="password"]::placeholder,
+            .light-mode input[type="number"]::placeholder,
+            .light-mode textarea::placeholder {
+                color: #94a3b8 !important;
+            }
+            
+            /* Table headers in light mode */
+            .light-mode .bg-slate-900 {
+                background-color: #f8fafc !important;
+            }
+        </style>
+        {% endblock %}
+    </head>
+    <body class="bg-slate-900 text-white min-h-screen">
+        {% block body %}{% endblock %}
+        {% block javascripts %}
+        <script>
+            // Apply theme on page load
+            (function() {
+                const currentTheme = localStorage.getItem('theme') || 'dark';
+                if (currentTheme === 'light') {
+                    document.documentElement.classList.add('light-mode');
+                }
+            })();
+        </script>
+        {% endblock %}
+    </body>
+</html>

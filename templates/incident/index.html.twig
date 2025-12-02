@@ -1,0 +1,208 @@
+{% extends 'dashboard/layout.html.twig' %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-white">Incidents</h1>
+            <p class="text-slate-400 mt-1">Track and manage security incidents and their resolution</p>
+        </div>
+        <div class="flex items-center space-x-3">
+            <form method="get" class="flex items-center space-x-3">
+                <select name="severity" onchange="this.form.submit()" class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="all" {{ currentSeverity == 'all' ? 'selected' : '' }}>All Severities</option>
+                    <option value="critical" {{ currentSeverity == 'critical' ? 'selected' : '' }}>Critical</option>
+                    <option value="high" {{ currentSeverity == 'high' ? 'selected' : '' }}>High</option>
+                    <option value="medium" {{ currentSeverity == 'medium' ? 'selected' : '' }}>Medium</option>
+                    <option value="low" {{ currentSeverity == 'low' ? 'selected' : '' }}>Low</option>
+                </select>
+                <select name="status" onchange="this.form.submit()" class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="all" {{ currentStatus == 'all' ? 'selected' : '' }}>All Status</option>
+                    <option value="open" {{ currentStatus == 'open' ? 'selected' : '' }}>Open</option>
+                    <option value="investigating" {{ currentStatus == 'investigating' ? 'selected' : '' }}>Investigating</option>
+                    <option value="resolved" {{ currentStatus == 'resolved' ? 'selected' : '' }}>Resolved</option>
+                </select>
+                {% if currentSeverity != 'all' or currentStatus != 'all' %}
+                    <a href="{{ path('app_incidents') }}" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-2 rounded-lg text-sm transition-colors">
+                        Clear Filters
+                    </a>
+                {% endif %}
+            </form>
+            <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-200 flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                New Incident
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-400">Total Incidents</p>
+                    <p class="text-2xl font-bold text-white">{{ incidents|length }}</p>
+                </div>
+                <div class="w-12 h-12 bg-blue-600/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-400">Open</p>
+                    <p class="text-2xl font-bold text-red-400">{{ incidents|filter(incident => incident.status == 'open')|length }}</p>
+                </div>
+                <div class="w-12 h-12 bg-red-600/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-400">Investigating</p>
+                    <p class="text-2xl font-bold text-yellow-400">{{ incidents|filter(incident => incident.status == 'investigating')|length }}</p>
+                </div>
+                <div class="w-12 h-12 bg-yellow-600/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-400">Resolved</p>
+                    <p class="text-2xl font-bold text-green-400">{{ incidents|filter(incident => incident.status == 'resolved')|length }}</p>
+                </div>
+                <div class="w-12 h-12 bg-green-600/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Incidents Table -->
+    <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+        <div class="p-6 border-b border-slate-700">
+            <h2 class="text-lg font-semibold text-white">All Incidents</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-slate-900">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Incident</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Assigned To</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Opened</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Duration</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-700">
+                    {% for incident in incidents %}
+                    <tr class="hover:bg-slate-700/50 transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="flex items-start space-x-3">
+                                <div class="flex-shrink-0 mt-1">
+                                    {% if incident.status == 'open' %}
+                                        <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                                    {% elseif incident.status == 'investigating' %}
+                                        <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                                    {% else %}
+                                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-white">INC-{{ incident.id }}</p>
+                                    <p class="text-xs text-slate-400 mt-1">{{ incident.notes|slice(0, 50) }}...</p>
+                                    <div class="flex items-center space-x-2 mt-1">
+                                        <span class="text-xs text-slate-400">{{ incident.alerts|length }} alerts</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if incident.status == 'open' %}
+                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-red-600/20 text-red-400">Open</span>
+                            {% elseif incident.status == 'investigating' %}
+                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-600/20 text-yellow-400">Investigating</span>
+                            {% else %}
+                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-600/20 text-green-400">Resolved</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">
+                            {% if incident.assignedTo %}
+                                {{ incident.assignedTo.username }}
+                            {% else %}
+                                Unassigned
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>{{ incident.openedAt|date('M d, H:i') }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">
+                            {% if incident.closedAt %}
+                                {% set duration = date(incident.closedAt).diff(date(incident.openedAt)) %}
+                                {% if duration.days > 0 %}
+                                    {{ duration.days }}d {{ duration.h }}h
+                                {% else %}
+                                    {{ duration.h }}h {{ duration.i }}m
+                                {% endif %}
+                            {% else %}
+                                {% set duration = date().diff(date(incident.openedAt)) %}
+                                {% if duration.days > 0 %}
+                                    {{ duration.days }}d {{ duration.h }}h
+                                {% else %}
+                                    {{ duration.h }}h {{ duration.i }}m
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex items-center space-x-2">
+                                <a href="{{ path('app_incident_show', {'id': incident.id}) }}" class="text-blue-400 hover:text-blue-300">View</a>
+                                {% if incident.status != 'resolved' %}
+                                    <form method="post" action="{{ path('app_incident_close', {'id': incident.id}) }}" class="inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('close' ~ incident.id) }}">
+                                        <button type="submit" class="text-green-400 hover:text-green-300" onclick="return confirm('Are you sure you want to close this incident?')">Close</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="px-6 py-12 text-center text-slate-400">
+                            <div class="flex flex-col items-center">
+                                <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                                <p class="text-lg font-medium">No incidents found</p>
+                                <p class="text-sm mt-2">Incidents will appear here when alerts are escalated</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

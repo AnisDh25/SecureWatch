@@ -1,0 +1,151 @@
+{% extends 'dashboard/layout.html.twig' %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-white">Assets</h1>
+            <p class="text-slate-400 mt-1">Manage and monitor your infrastructure assets</p>
+        </div>
+        <a href="{{ path('app_asset_new') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-200 flex items-center">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Add Asset
+        </a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-400">Total Assets</p>
+                    <p class="text-2xl font-bold text-white">{{ assets|length }}</p>
+                </div>
+                <div class="w-12 h-12 bg-blue-600/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-400">Active</p>
+                    <p class="text-2xl font-bold text-green-400">{{ assets|filter(asset => asset.status == 'active')|length }}</p>
+                </div>
+                <div class="w-12 h-12 bg-green-600/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-400">Inactive</p>
+                    <p class="text-2xl font-bold text-yellow-400">{{ assets|filter(asset => asset.status == 'inactive')|length }}</p>
+                </div>
+                <div class="w-12 h-12 bg-yellow-600/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-400">Maintenance</p>
+                    <p class="text-2xl font-bold text-orange-400">{{ assets|filter(asset => asset.status == 'maintenance')|length }}</p>
+                </div>
+                <div class="w-12 h-12 bg-orange-600/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assets Table -->
+    <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+        <div class="p-6 border-b border-slate-700">
+            <h2 class="text-lg font-semibold text-white">All Assets</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-slate-900">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Hostname</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">IP Address</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Type</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Events</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-700">
+                    {% for asset in assets %}
+                    <tr class="hover:bg-slate-700/50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center mr-3">
+                                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm font-medium text-white">{{ asset.hostname }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">{{ asset.ip }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">{{ asset.type }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if asset.status == 'active' %}
+                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-600/20 text-green-400">Active</span>
+                            {% elseif asset.status == 'inactive' %}
+                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-600/20 text-yellow-400">Inactive</span>
+                            {% elseif asset.status == 'maintenance' %}
+                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-orange-600/20 text-orange-400">Maintenance</span>
+                            {% else %}
+                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-red-600/20 text-red-400">Unknown</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300">{{ asset.events|length }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex items-center space-x-2">
+                                <a href="{{ path('app_asset_show', {'id': asset.id}) }}" class="text-blue-400 hover:text-blue-300">View</a>
+                                <a href="{{ path('app_asset_edit', {'id': asset.id}) }}" class="text-yellow-400 hover:text-yellow-300">Edit</a>
+                                <form method="post" action="{{ path('app_asset_delete', {'id': asset.id}) }}" onsubmit="return confirm('Are you sure you want to delete this asset?')" class="inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ asset.id) }}">
+                                    <button type="submit" class="text-red-400 hover:text-red-300">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="px-6 py-12 text-center text-slate-400">
+                            <div class="flex flex-col items-center">
+                                <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
+                                </svg>
+                                <p class="text-lg font-medium">No assets found</p>
+                                <p class="text-sm mt-2">Get started by adding your first asset</p>
+                                <a href="{{ path('app_asset_new') }}" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                                    Add Asset
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
