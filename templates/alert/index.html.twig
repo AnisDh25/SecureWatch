@@ -174,7 +174,10 @@
                             <div class="flex items-center space-x-2">
                                 <a href="{{ path('app_alert_show', {'id': alert.id}) }}" class="text-blue-400 hover:text-blue-300">View</a>
                                 {% if alert.status == 'active' %}
-                                    <button class="text-green-400 hover:text-green-300">Resolve</button>
+                                    <form method="post" action="{{ path('app_alert_resolve', {'id': alert.id}) }}" class="inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('resolve' ~ alert.id) }}">
+                                        <button type="submit" class="text-green-400 hover:text-green-300" onclick="return confirm('Are you sure you want to resolve this alert?')">Resolve</button>
+                                    </form>
                                 {% endif %}
                             </div>
                         </td>

@@ -154,7 +154,7 @@ class Incident
 
     public function close(): void
     {
-        $this->status = 'closed';
+        $this->status = 'resolved';
         $this->closedAt = new \DateTime();
     }
 }

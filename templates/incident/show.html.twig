@@ -1,0 +1,187 @@
+{% extends 'dashboard/layout.html.twig' %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <a href="{{ path('app_incidents') }}" class="text-slate-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </a>
+            <div>
+                <h1 class="text-3xl font-bold text-white">Incident Details</h1>
+                <p class="text-slate-400 mt-1">Complete information about this security incident</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3">
+            {% if incident.severity == 'critical' %}
+                <span class="px-3 py-1 text-sm font-medium rounded-full bg-red-600/20 text-red-400 border border-red-600/30">Critical</span>
+            {% elseif incident.severity == 'high' %}
+                <span class="px-3 py-1 text-sm font-medium rounded-full bg-orange-600/20 text-orange-400 border border-orange-600/30">High</span>
+            {% elseif incident.severity == 'medium' %}
+                <span class="px-3 py-1 text-sm font-medium rounded-full bg-yellow-600/20 text-yellow-400 border border-yellow-600/30">Medium</span>
+            {% else %}
+                <span class="px-3 py-1 text-sm font-medium rounded-full bg-blue-600/20 text-blue-400 border border-blue-600/30">Low</span>
+            {% endif %}
+            {% if incident.status == 'resolved' %}
+                <span class="px-3 py-1 text-sm font-medium rounded-full bg-green-600/20 text-green-400 border border-green-600/30">Resolved</span>
+            {% else %}
+                <span class="px-3 py-1 text-sm font-medium rounded-full bg-red-600/20 text-red-400 border border-red-600/30">Open</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Incident Overview -->
+    <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+        <div class="p-6 border-b border-slate-700">
+            <h2 class="text-lg font-semibold text-white">Incident Overview</h2>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Basic Information -->
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-sm font-medium text-slate-400 mb-2">Basic Information</h3>
+                        <dl class="space-y-3">
+                            <div class="flex justify-between">
+                                <dt class="text-sm text-slate-400">Incident ID</dt>
+                                <dd class="text-sm text-white font-mono">#{{ incident.id }}</dd>
+                            </div>
+                            <div class="flex justify-between">
+                                <dt class="text-sm text-slate-400">Status</dt>
+                                <dd class="text-sm text-white capitalize">{{ incident.status }}</dd>
+                            </div>
+                            <div class="flex justify-between">
+                                <dt class="text-sm text-slate-400">Severity</dt>
+                                <dd class="text-sm text-white capitalize">{{ incident.severity }}</dd>
+                            </div>
+                            <div class="flex justify-between">
+                                <dt class="text-sm text-slate-400">Opened At</dt>
+                                <dd class="text-sm text-white">{{ incident.openedAt|date('Y-m-d H:i:s') }}</dd>
+                            </div>
+                            {% if incident.closedAt %}
+                            <div class="flex justify-between">
+                                <dt class="text-sm text-slate-400">Closed At</dt>
+                                <dd class="text-sm text-white">{{ incident.closedAt|date('Y-m-d H:i:s') }}</dd>
+                            </div>
+                            {% endif %}
+                        </dl>
+                    </div>
+                    
+                    {% if incident.assignedTo %}
+                    <div>
+                        <h3 class="text-sm font-medium text-slate-400 mb-2">Assigned To</h3>
+                        <div class="bg-slate-900 rounded-lg p-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                                    <span class="text-sm font-medium text-white">{{ incident.assignedTo.username|slice(0, 2)|upper }}</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-white">{{ incident.assignedTo.username }}</p>
+                                    <p class="text-xs text-slate-400">{{ incident.assignedTo.getDisplayName() }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Incident Details -->
+                <div class="space-y-4">
+                    {% if incident.notes %}
+                    <div>
+                        <h3 class="text-sm font-medium text-slate-400 mb-2">Notes</h3>
+                        <div class="bg-slate-900 rounded-lg p-4">
+                            <p class="text-sm text-slate-300 whitespace-pre-wrap">{{ incident.notes }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Alerts -->
+    {% if incident.alerts|length > 0 %}
+    <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+        <div class="p-6 border-b border-slate-700">
+            <h2 class="text-lg font-semibold text-white">Related Alerts ({{ incident.alerts|length }})</h2>
+        </div>
+        <div class="divide-y divide-slate-700">
+            {% for alert in incident.alerts %}
+            <div class="p-6 hover:bg-slate-700/50 transition-colors">
+                <div class="flex items-start space-x-4">
+                    <div class="flex-shrink-0">
+                        {% if alert.severity == 'critical' %}
+                            <div class="w-10 h-10 bg-red-600/20 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                            </div>
+                        {% elseif alert.severity == 'high' %}
+                            <div class="w-10 h-10 bg-orange-600/20 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                            </div>
+                        {% elseif alert.severity == 'medium' %}
+                            <div class="w-10 h-10 bg-yellow-600/20 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                            </div>
+                        {% else %}
+                            <div class="w-10 h-10 bg-blue-600/20 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-white">{{ alert.alertRule.name }}</h3>
+                            <span class="text-xs text-slate-400">{{ alert.createdAt|date('H:i:s') }}</span>
+                        </div>
+                        <p class="text-sm text-slate-300 mb-2">{{ alert.alertRule.condition }}</p>
+                        <div class="flex items-center space-x-4 text-xs text-slate-400">
+                            <span class="px-2 py-1 text-xs font-medium rounded-full 
+                                {% if alert.severity == 'critical' %}bg-red-600/20 text-red-400
+                                {% elseif alert.severity == 'high' %}bg-orange-600/20 text-orange-400
+                                {% elseif alert.severity == 'medium' %}bg-yellow-600/20 text-yellow-400
+                                {% else %}bg-blue-600/20 text-blue-400{% endif %}">
+                                {{ alert.severity|capitalize }}
+                            </span>
+                            <span>Status: {{ alert.status|capitalize }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Actions -->
+    <div class="flex items-center space-x-4">
+        <a href="{{ path('app_incidents') }}" class="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+            Back to Incidents
+        </a>
+        {% for alert in incident.alerts %}
+        <a href="{{ path('app_alert_show', {'id': alert.id}) }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+            View Alert Details
+        </a>
+        {% endfor %}
+        {% if incident.status != 'resolved' %}
+        <form method="post" action="{{ path('app_incident_close', {'id': incident.id}) }}" class="inline">
+            <input type="hidden" name="_token" value="{{ csrf_token('close' ~ incident.id) }}">
+            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm transition-colors" onclick="return confirm('Are you sure you want to close this incident?')">
+                Close Incident
+            </button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Alert;
 use App\Repository\AlertRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,5 +51,17 @@ class AlertController extends AbstractController
         return $this->render('alert/show.html.twig', [
             'alert' => $alert,
         ]);
+    }
+
+    #[Route('/{id}/resolve', name: 'app_alert_resolve', methods: ['POST'])]
+    public function resolve(Request $request, Alert $alert, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('resolve'.$alert->getId(), $request->request->get('_token'))) {
+            $alert->setStatus('resolved');
+            $entityManager->persist($alert);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_alerts');
     }
 }
