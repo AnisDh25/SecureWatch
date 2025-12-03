@@ -269,7 +269,16 @@ php bin/console phpunit tests/Controller/SearchControllerTest.php
 
 ## 🔄 Version History
 
-### v1.0.0 (Current)
+### v1.1.0 (Latest) - December 2024
+- ✅ **Fixed View Details functionality** for Events, Alerts, and Incidents
+- ✅ **Added Alert Resolve functionality** with CSRF protection
+- ✅ **Fixed Incident Close functionality** to use proper status management
+- ✅ **Enhanced template consistency** across all detail pages
+- ✅ **Fixed entity property mapping** issues (ipAddress->ip, createdAt->sentAt, etc.)
+- ✅ **Improved database operations** using proper EntityManager
+- ✅ **Added comprehensive detail views** with related entity information
+
+### v1.0.0
 - ✅ Initial Symfony 6.4 setup
 - ✅ Dynamic search functionality
 - ✅ Advanced filtering system
@@ -291,7 +300,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 👥 Author
 
-**Anis Dhahoui**
+**Anis Dhaoui**
 - GitHub: [@AnisDh25](https://github.com/AnisDh25)
 - Email: anis.dhaoui@tek-up.de
 
