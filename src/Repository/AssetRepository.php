@@ -39,13 +39,13 @@ class AssetRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('a');
         
         $qb->where($qb->expr()->orX(
-            'a.name LIKE :query',
+            'a.hostname LIKE :query',
             'a.type LIKE :query',
-            'a.ipAddress LIKE :query',
-            'a.description LIKE :query'
+            'a.ip LIKE :query',
+            'a.status LIKE :query'
         ))
         ->setParameter('query', '%' . $query . '%')
-        ->orderBy('a.createdAt', 'DESC')
+        ->orderBy('a.hostname', 'ASC')
         ->setMaxResults($limit);
         
         return $qb->getQuery()->getResult();

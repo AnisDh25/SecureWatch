@@ -20,10 +20,15 @@ class AlertRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('a');
         
-        $qb->where($qb->expr()->orX(
-            'a.title LIKE :query',
-            'a.message LIKE :query',
-            'a.source LIKE :query'
+        $qb->leftJoin('a.alertRule', 'ar')
+           ->leftJoin('a.event', 'e')
+           ->where($qb->expr()->orX(
+            'a.severity LIKE :query',
+            'a.status LIKE :query',
+            'ar.name LIKE :query',
+            'ar.condition LIKE :query',
+            'e.source LIKE :query',
+            'e.data LIKE :query'
         ))
         ->setParameter('query', '%' . $query . '%')
         ->orderBy('a.createdAt', 'DESC')

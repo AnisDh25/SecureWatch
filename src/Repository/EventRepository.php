@@ -21,9 +21,9 @@ class EventRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('e');
         
         $qb->where($qb->expr()->orX(
-            'e.title LIKE :query',
-            'e.description LIKE :query',
-            'e.source LIKE :query'
+            'e.source LIKE :query',
+            'e.severity LIKE :query',
+            'e.data LIKE :query'
         ))
         ->setParameter('query', '%' . $query . '%')
         ->orderBy('e.timestamp', 'DESC')

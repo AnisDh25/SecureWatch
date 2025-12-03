@@ -1,0 +1,71 @@
+{% extends 'dashboard/layout.html.twig' %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-white">Edit Alert Rule</h1>
+            <p class="text-slate-400 mt-1">Update the alert rule configuration</p>
+        </div>
+        <a href="{{ path('app_settings') }}" class="bg-slate-600 hover:bg-slate-700 text-white font-medium py-2 px-4 rounded-md transition duration-200 flex items-center">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Back to Settings
+        </a>
+    </div>
+
+    <!-- Alert Rule Form -->
+    <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+        <div class="p-6 border-b border-slate-700">
+            <h2 class="text-lg font-semibold text-white">Edit Rule: {{ alertRule.name }}</h2>
+        </div>
+        <div class="p-6">
+            {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+            
+            <!-- Rule Name -->
+            <div>
+                {{ form_label(form.name, 'Rule Name', {'label_attr': {'class': 'block text-sm font-medium text-slate-300 mb-2'}}) }}
+                {{ form_widget(form.name) }}
+                {{ form_errors(form.name, {'attr': {'class': 'text-red-400 text-sm mt-1'}}) }}
+                <p class="text-xs text-slate-400 mt-1">A descriptive name for this alert rule</p>
+            </div>
+
+            <!-- Trigger Condition -->
+            <div>
+                {{ form_label(form.condition, 'Trigger Condition', {'label_attr': {'class': 'block text-sm font-medium text-slate-300 mb-2'}}) }}
+                {{ form_widget(form.condition) }}
+                {{ form_errors(form.condition, {'attr': {'class': 'text-red-400 text-sm mt-1'}}) }}
+                <p class="text-xs text-slate-400 mt-1">Select when this rule should trigger an alert</p>
+            </div>
+
+            <!-- Threshold -->
+            <div>
+                {{ form_label(form.threshold, 'Threshold', {'label_attr': {'class': 'block text-sm font-medium text-slate-300 mb-2'}}) }}
+                {{ form_widget(form.threshold) }}
+                {{ form_errors(form.threshold, {'attr': {'class': 'text-red-400 text-sm mt-1'}}) }}
+                <p class="text-xs text-slate-400 mt-1">Optional threshold value for numeric conditions</p>
+            </div>
+
+            <!-- Action -->
+            <div>
+                {{ form_label(form.action, 'Action Description', {'label_attr': {'class': 'block text-sm font-medium text-slate-300 mb-2'}}) }}
+                {{ form_widget(form.action) }}
+                {{ form_errors(form.action, {'attr': {'class': 'text-red-400 text-sm mt-1'}}) }}
+                <p class="text-xs text-slate-400 mt-1">Describe what action should be taken when this rule triggers</p>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex items-center justify-end space-x-3 pt-6 border-t border-slate-700">
+                <a href="{{ path('app_settings') }}" class="bg-slate-600 hover:bg-slate-700 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                    Cancel
+                </a>
+                {{ form_widget(form.submit) }}
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

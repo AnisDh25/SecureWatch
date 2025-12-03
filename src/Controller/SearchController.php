@@ -37,25 +37,35 @@ class SearchController extends AbstractController
                 $results[] = [
                     'id' => $event->getId(),
                     'type' => 'event',
-                    'title' => $event->getTitle(),
-                    'description' => substr($event->getDescription() ?? '', 0, 100),
+                    'title' => $event->getSource() . ' Event',
+                    'description' => substr($event->getData() ?? '', 0, 100),
                     'severity' => $event->getSeverity(),
                     'time' => $this->formatTime($event->getTimestamp()),
-                    'url' => $this->generateUrl('app_events') . '#event-' . $event->getId()
+                    'url' => $this->generateUrl('app_event_show', ['id' => $event->getId()])
                 ];
             }
 
             // Search Alerts
             $alerts = $this->alertRepository->findBySearchQuery($query, 5);
             foreach ($alerts as $alert) {
+                $title = 'Alert #' . $alert->getId();
+                if ($alert->getAlertRule()) {
+                    $title = $alert->getAlertRule()->getName();
+                }
+                
+                $description = 'Severity: ' . $alert->getSeverity() . ', Status: ' . $alert->getStatus();
+                if ($alert->getEvent()) {
+                    $description .= ', Source: ' . $alert->getEvent()->getSource();
+                }
+                
                 $results[] = [
                     'id' => $alert->getId(),
                     'type' => 'alert',
-                    'title' => $alert->getTitle(),
-                    'description' => substr($alert->getMessage() ?? '', 0, 100),
+                    'title' => $title,
+                    'description' => substr($description, 0, 100),
                     'severity' => $alert->getSeverity(),
                     'time' => $this->formatTime($alert->getCreatedAt()),
-                    'url' => $this->generateUrl('app_alerts') . '#alert-' . $alert->getId()
+                    'url' => $this->generateUrl('app_alert_show', ['id' => $alert->getId()])
                 ];
             }
 
@@ -69,7 +79,7 @@ class SearchController extends AbstractController
                     'description' => substr($incident->getNotes() ?? '', 0, 100),
                     'severity' => $incident->getSeverity(),
                     'time' => $this->formatTime($incident->getOpenedAt()),
-                    'url' => $this->generateUrl('app_incidents') . '#incident-' . $incident->getId()
+                    'url' => $this->generateUrl('app_incident_show', ['id' => $incident->getId()])
                 ];
             }
 
@@ -79,11 +89,11 @@ class SearchController extends AbstractController
                 $results[] = [
                     'id' => $asset->getId(),
                     'type' => 'asset',
-                    'title' => $asset->getName(),
-                    'description' => $asset->getType() . ' - ' . $asset->getIpAddress(),
+                    'title' => $asset->getHostname(),
+                    'description' => $asset->getType() . ' - ' . $asset->getIp(),
                     'severity' => null,
-                    'time' => $this->formatTime($asset->getCreatedAt()),
-                    'url' => $this->generateUrl('app_assets') . '#asset-' . $asset->getId()
+                    'time' => 'Asset',
+                    'url' => $this->generateUrl('app_asset_show', ['id' => $asset->getId()])
                 ];
             }
 

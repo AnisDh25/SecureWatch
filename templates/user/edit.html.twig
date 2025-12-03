@@ -46,21 +46,6 @@
                 <p class="text-xs text-slate-400 mt-1">Select the primary role for this user</p>
             </div>
 
-            <!-- Permissions Field -->
-            <div>
-                {{ form_label(form.roles, 'Permissions', {'label_attr': {'class': 'block text-sm font-medium text-slate-300 mb-2'}}) }}
-                <div class="space-y-2">
-                    {% for choice in form.roles %}
-                        <div class="flex items-center">
-                            {{ form_widget(choice, {'attr': {'class': 'h-4 w-4 text-blue-600 bg-slate-700 border-slate-600 rounded focus:ring-blue-500'}}) }}
-                            {{ form_label(choice, choice.vars.label, {'label_attr': {'class': 'ml-2 text-sm text-slate-300'}}) }}
-                        </div>
-                    {% endfor %}
-                </div>
-                {{ form_errors(form.roles, {'attr': {'class': 'text-red-400 text-sm mt-1'}}) }}
-                <p class="text-xs text-slate-400 mt-1">Select the permissions for this user</p>
-            </div>
-
             <!-- Password Field -->
             <div>
                 {{ form_label(form.plainPassword, 'Password (leave blank to keep current)', {'label_attr': {'class': 'block text-sm font-medium text-slate-300 mb-2'}}) }}
